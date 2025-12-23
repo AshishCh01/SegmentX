@@ -1,0 +1,627 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Analysis Results | Customer Segmentation</title>
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800&display=swap"
+    rel="stylesheet">
+  <script src="https://cdn.tailwindcss.com"></script>
+  <style>
+    * {
+      font-family: 'Inter', sans-serif;
+    }
+
+    .gradient-bg {
+      background: linear-gradient(135deg, #0f0c29 0%, #302b63 50%, #24243e 100%);
+      min-height: 100vh;
+    }
+
+    .glass-card {
+      background: rgba(255, 255, 255, 0.08);
+      backdrop-filter: blur(20px);
+      -webkit-backdrop-filter: blur(20px);
+      border: 1px solid rgba(255, 255, 255, 0.1);
+      box-shadow: 0 8px 32px rgba(0, 0, 0, 0.3);
+    }
+
+    .glass-dark {
+      background: rgba(0, 0, 0, 0.3);
+      backdrop-filter: blur(10px);
+    }
+
+    .glow-text {
+      text-shadow: 0 0 40px rgba(139, 92, 246, 0.5);
+    }
+
+    .gradient-btn {
+      background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+      transition: all 0.3s ease;
+    }
+
+    .gradient-btn:hover {
+      background: linear-gradient(135deg, #764ba2 0%, #667eea 100%);
+      transform: scale(1.02);
+      box-shadow: 0 10px 30px rgba(102, 126, 234, 0.4);
+    }
+
+    .chart-card {
+      transition: all 0.4s ease;
+    }
+
+    .chart-card:hover {
+      transform: translateY(-8px);
+      box-shadow: 0 20px 60px rgba(139, 92, 246, 0.2);
+    }
+
+    .chart-card img {
+      transition: all 0.3s ease;
+    }
+
+    .chart-card:hover img {
+      transform: scale(1.02);
+    }
+
+    .segment-badge {
+      transition: all 0.3s ease;
+    }
+
+    .segment-badge:hover {
+      transform: scale(1.05);
+    }
+
+    .silhouette-score {
+      background: linear-gradient(135deg, rgba(16, 185, 129, 0.2) 0%, rgba(5, 150, 105, 0.2) 100%);
+      border: 1px solid rgba(16, 185, 129, 0.3);
+    }
+
+    .metric-card {
+      background: rgba(0, 0, 0, 0.2);
+      border: 1px solid rgba(255, 255, 255, 0.1);
+      transition: all 0.3s ease;
+    }
+
+    .metric-card:hover {
+      border-color: rgba(139, 92, 246, 0.5);
+      background: rgba(139, 92, 246, 0.1);
+    }
+
+    .table-container table {
+      width: 100%;
+      border-collapse: separate;
+      border-spacing: 0;
+    }
+
+    .table-container th {
+      background: rgba(139, 92, 246, 0.3);
+      color: white;
+      font-weight: 600;
+      padding: 14px 16px;
+      text-align: left;
+      border-bottom: 2px solid rgba(139, 92, 246, 0.5);
+    }
+
+    .table-container th:first-child {
+      border-radius: 12px 0 0 0;
+    }
+
+    .table-container th:last-child {
+      border-radius: 0 12px 0 0;
+    }
+
+    .table-container td {
+      padding: 12px 16px;
+      border-bottom: 1px solid rgba(255, 255, 255, 0.1);
+      color: #e5e7eb;
+    }
+
+    .table-container tr:hover td {
+      background: rgba(139, 92, 246, 0.1);
+    }
+
+    .table-container tr:last-child td:first-child {
+      border-radius: 0 0 0 12px;
+    }
+
+    .table-container tr:last-child td:last-child {
+      border-radius: 0 0 12px 0;
+    }
+
+    .toggle-btn {
+      background: rgba(255, 255, 255, 0.1);
+      transition: all 0.3s ease;
+    }
+
+    .toggle-btn:hover {
+      background: rgba(255, 255, 255, 0.2);
+    }
+
+    .toggle-btn.active {
+      background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+    }
+
+    .tab-btn {
+      background: rgba(255, 255, 255, 0.05);
+      transition: all 0.3s ease;
+    }
+
+    .tab-btn:hover {
+      background: rgba(255, 255, 255, 0.1);
+    }
+
+    .tab-btn.active {
+      background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+    }
+
+    .fade-in {
+      animation: fadeIn 0.5s ease-out;
+    }
+
+    @keyframes fadeIn {
+      from {
+        opacity: 0;
+        transform: translateY(20px);
+      }
+
+      to {
+        opacity: 1;
+        transform: translateY(0);
+      }
+    }
+
+    .particles {
+      position: fixed;
+      top: 0;
+      left: 0;
+      width: 100%;
+      height: 100%;
+      overflow: hidden;
+      pointer-events: none;
+      z-index: 0;
+    }
+
+    .particle {
+      position: absolute;
+      width: 4px;
+      height: 4px;
+      background: rgba(139, 92, 246, 0.3);
+      border-radius: 50%;
+      animation: rise 12s infinite;
+    }
+
+    @keyframes rise {
+      0% {
+        transform: translateY(100vh) scale(0);
+        opacity: 0;
+      }
+
+      50% {
+        opacity: 1;
+      }
+
+      100% {
+        transform: translateY(-100vh) scale(1);
+        opacity: 0;
+      }
+    }
+
+    .insight-card {
+      transition: all 0.3s ease;
+      border-left: 4px solid transparent;
+    }
+
+    .insight-card:hover {
+      border-left-color: #8b5cf6;
+      transform: translateX(5px);
+    }
+
+    .tab-content {
+      display: none;
+    }
+
+    .tab-content.active {
+      display: block;
+    }
+  </style>
+</head>
+
+<body class="gradient-bg text-white">
+  <!-- Particles Background -->
+  <div class="particles">
+    <div class="particle" style="left: 5%; animation-delay: 0s;"></div>
+    <div class="particle" style="left: 15%; animation-delay: 1.5s;"></div>
+    <div class="particle" style="left: 25%; animation-delay: 3s;"></div>
+    <div class="particle" style="left: 35%; animation-delay: 0.5s;"></div>
+    <div class="particle" style="left: 45%; animation-delay: 2s;"></div>
+    <div class="particle" style="left: 55%; animation-delay: 4s;"></div>
+    <div class="particle" style="left: 65%; animation-delay: 1s;"></div>
+    <div class="particle" style="left: 75%; animation-delay: 2.5s;"></div>
+    <div class="particle" style="left: 85%; animation-delay: 3.5s;"></div>
+    <div class="particle" style="left: 95%; animation-delay: 0.8s;"></div>
+  </div>
+
+  <div class="relative z-10 max-w-7xl mx-auto px-6 py-10">
+    <!-- Navigation -->
+    <nav class="flex justify-between items-center mb-10">
+      <a href="/" class="flex items-center gap-3 hover:opacity-80 transition-opacity">
+        <div
+          class="w-10 h-10 rounded-xl bg-gradient-to-br from-violet-500 to-purple-600 flex items-center justify-center">
+          <svg class="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
+              d="M9 19v-6a2 2 0 00-2-2H5a2 2 0 00-2 2v6a2 2 0 002 2h2a2 2 0 002-2zm0 0V9a2 2 0 012-2h2a2 2 0 012 2v10m-6 0a2 2 0 002 2h2a2 2 0 002-2m0 0V5a2 2 0 012-2h2a2 2 0 012 2v14a2 2 0 01-2 2h-2a2 2 0 01-2-2z">
+            </path>
+          </svg>
+        </div>
+        <span class="text-xl font-bold">SegmentAI Pro</span>
+      </a>
+      <div class="flex items-center gap-4">
+        <span class="text-sm text-gray-400">Analysis Complete</span>
+        <div class="w-2 h-2 rounded-full bg-green-400 animate-pulse"></div>
+      </div>
+    </nav>
+
+    <!-- Header -->
+    <header class="text-center mb-12 fade-in">
+      <div class="inline-flex items-center gap-2 mb-4 px-4 py-2 rounded-full glass-card text-sm">
+        <svg class="w-5 h-5 text-green-400" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+          <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
+            d="M9 12l2 2 4-4m6 2a9 9 0 11-18 0 9 9 0 0118 0z"></path>
+        </svg>
+        <span class="text-green-300">Successfully Analyzed</span>
+      </div>
+      <h1 class="text-4xl md:text-5xl font-extrabold mb-4 glow-text">
+        Customer Segmentation
+        <span
+          class="bg-gradient-to-r from-violet-400 via-purple-400 to-pink-400 bg-clip-text text-transparent">Results</span>
+      </h1>
+      <p class="text-gray-400 text-lg">
+        {% if metrics %}
+          Dataset: {{ metrics.dataset_type|title }} | Method: {{ metrics.method }} | Processed in {{ metrics.processing_time }}s
+        {% else %}
+          Your customers have been grouped into distinct segments
+        {% endif %}
+      </p>
+    </header>
+
+    <!-- Metrics Dashboard -->
+    <div class="grid grid-cols-2 md:grid-cols-4 gap-4 mb-10 fade-in" style="animation-delay: 0.1s;">
+      <div class="metric-card rounded-xl p-4 text-center">
+        <div class="text-3xl font-bold text-emerald-400">{{ silhouette_score }}</div>
+        <div class="text-sm text-gray-400">Silhouette Score</div>
+      </div>
+      <div class="metric-card rounded-xl p-4 text-center">
+        <div class="text-3xl font-bold text-blue-400">{% if metrics %}{{ metrics.n_clusters }}{% else %}4{% endif %}</div>
+        <div class="text-sm text-gray-400">Clusters Found</div>
+      </div>
+      <div class="metric-card rounded-xl p-4 text-center">
+        <div class="text-3xl font-bold text-purple-400">{% if metrics %}{{ metrics.n_samples|filesizeformat }}{% else %}N/A{% endif %}</div>
+        <div class="text-sm text-gray-400">Samples Analyzed</div>
+      </div>
+      <div class="metric-card rounded-xl p-4 text-center">
+        <div class="text-3xl font-bold text-amber-400">{% if metrics %}{{ metrics.processing_time }}s{% else %}N/A{% endif %}</div>
+        <div class="text-sm text-gray-400">Processing Time</div>
+      </div>
+    </div>
+
+    <!-- Main Charts Grid -->
+    <div class="grid md:grid-cols-2 gap-8 mb-10">
+      <div class="chart-card glass-card rounded-2xl p-6 fade-in" style="animation-delay: 0.2s;">
+        <div class="flex items-center gap-3 mb-4">
+          <div
+            class="w-10 h-10 rounded-lg bg-gradient-to-br from-pink-500 to-rose-400 flex items-center justify-center">
+            <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+              <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
+                d="M11 3.055A9.001 9.001 0 1020.945 13H11V3.055z"></path>
+            </svg>
+          </div>
+          <div>
+            <h2 class="text-lg font-bold">Customer Distribution</h2>
+            <p class="text-sm text-gray-400">Segment proportion breakdown</p>
+          </div>
+        </div>
+        <div class="bg-black/20 rounded-xl p-4">
+          <img src="{{ pie_chart_img }}" alt="Pie Chart" class="w-full rounded-lg">
+        </div>
+      </div>
+
+      <div class="chart-card glass-card rounded-2xl p-6 fade-in" style="animation-delay: 0.3s;">
+        <div class="flex items-center gap-3 mb-4">
+          <div
+            class="w-10 h-10 rounded-lg bg-gradient-to-br from-blue-500 to-cyan-400 flex items-center justify-center">
+            <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+              <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
+                d="M9 19v-6a2 2 0 00-2-2H5a2 2 0 00-2 2v6a2 2 0 002 2h2a2 2 0 002-2zm0 0V9a2 2 0 012-2h2a2 2 0 012 2v10m-6 0a2 2 0 002 2h2a2 2 0 002-2m0 0V5a2 2 0 012-2h2a2 2 0 012 2v14a2 2 0 01-2 2h-2a2 2 0 01-2-2z">
+              </path>
+            </svg>
+          </div>
+          <div>
+            <h2 class="text-lg font-bold">Customer Count</h2>
+            <p class="text-sm text-gray-400">Number per segment</p>
+          </div>
+        </div>
+        <div class="bg-black/20 rounded-xl p-4">
+          <img src="{{ bar_chart_img }}" alt="Bar Chart" class="w-full rounded-lg">
+        </div>
+      </div>
+    </div>
+
+    <!-- Segment Insights -->
+    <div class="glass-card rounded-2xl p-8 mb-10 fade-in" style="animation-delay: 0.4s;">
+      <div class="flex items-center gap-3 mb-6">
+        <div
+          class="w-10 h-10 rounded-lg bg-gradient-to-br from-amber-500 to-orange-400 flex items-center justify-center">
+          <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
+              d="M9.663 17h4.673M12 3v1m6.364 1.636l-.707.707M21 12h-1M4 12H3m3.343-5.657l-.707-.707m2.828 9.9a5 5 0 117.072 0l-.548.547A3.374 3.374 0 0014 18.469V19a2 2 0 11-4 0v-.531c0-.895-.356-1.754-.988-2.386l-.548-.547z">
+            </path>
+          </svg>
+        </div>
+        <div>
+          <h2 class="text-xl font-bold">Actionable Insights</h2>
+          <p class="text-sm text-gray-400">Strategic recommendations for each segment</p>
+        </div>
+      </div>
+
+      <div class="grid md:grid-cols-2 gap-4">
+        <div class="insight-card glass-dark rounded-xl p-5">
+          <div class="flex items-center gap-3 mb-3">
+            <span class="segment-badge w-10 h-10 rounded-lg bg-gradient-to-br from-green-400 to-emerald-500 flex items-center justify-center text-lg">💰</span>
+            <span class="font-semibold text-green-300">Budget Shoppers</span>
+          </div>
+          <p class="text-gray-400 text-sm">Price-sensitive customers who respond well to <span class="text-white">discount coupons</span>, flash sales, and bundle deals.</p>
+        </div>
+
+        <div class="insight-card glass-dark rounded-xl p-5">
+          <div class="flex items-center gap-3 mb-3">
+            <span class="segment-badge w-10 h-10 rounded-lg bg-gradient-to-br from-purple-400 to-violet-500 flex items-center justify-center text-lg">💎</span>
+            <span class="font-semibold text-purple-300">High Spenders</span>
+          </div>
+          <p class="text-gray-400 text-sm">VIP customers who appreciate <span class="text-white">exclusive perks</span>, early access, and premium loyalty rewards.</p>
+        </div>
+
+        <div class="insight-card glass-dark rounded-xl p-5">
+          <div class="flex items-center gap-3 mb-3">
+            <span class="segment-badge w-10 h-10 rounded-lg bg-gradient-to-br from-blue-400 to-cyan-500 flex items-center justify-center text-lg">🛒</span>
+            <span class="font-semibold text-blue-300">Occasional Buyers</span>
+          </div>
+          <p class="text-gray-400 text-sm">Re-engage with <span class="text-white">personalized recommendations</span> and targeted email campaigns based on past purchases.</p>
+        </div>
+
+        <div class="insight-card glass-dark rounded-xl p-5">
+          <div class="flex items-center gap-3 mb-3">
+            <span class="segment-badge w-10 h-10 rounded-lg bg-gradient-to-br from-orange-400 to-amber-500 flex items-center justify-center text-lg">⭐</span>
+            <span class="font-semibold text-amber-300">Loyal Customers</span>
+          </div>
+          <p class="text-gray-400 text-sm">Brand advocates who can drive referrals. Send <span class="text-white">thank-you notes</span> and referral incentives.</p>
+        </div>
+      </div>
+    </div>
+
+    <!-- Data Preview -->
+    <div class="glass-card rounded-2xl p-8 mb-10 fade-in" style="animation-delay: 0.5s;">
+      <div class="flex flex-col md:flex-row items-start md:items-center justify-between gap-4 mb-6">
+        <div class="flex items-center gap-3">
+          <div
+            class="w-10 h-10 rounded-lg bg-gradient-to-br from-violet-500 to-purple-400 flex items-center justify-center">
+            <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+              <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
+                d="M3 10h18M3 14h18m-9-4v8m-7 0h14a2 2 0 002-2V8a2 2 0 00-2-2H5a2 2 0 00-2 2v8a2 2 0 002 2z"></path>
+            </svg>
+          </div>
+          <div>
+            <h2 class="text-xl font-bold">Customer Data Preview</h2>
+            <p class="text-sm text-gray-400">First 15 rows with assigned segments</p>
+          </div>
+        </div>
+        <a href="/static/uploads/clustered_customers_labeled.csv" download
+          class="gradient-btn px-6 py-3 rounded-xl font-semibold flex items-center gap-2 text-sm">
+          <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
+              d="M4 16v1a3 3 0 003 3h10a3 3 0 003-3v-1m-4-4l-4 4m0 0l-4-4m4 4V4"></path>
+          </svg>
+          Download Full CSV
+        </a>
+      </div>
+      <div class="table-container overflow-x-auto rounded-xl">
+        {{ tables|safe }}
+      </div>
+    </div>
+
+    <!-- Chart Tabs -->
+    <div class="glass-card rounded-2xl p-6 mb-10">
+      <div class="flex items-center gap-3 mb-6">
+        <div class="w-10 h-10 rounded-lg bg-gradient-to-br from-indigo-500 to-blue-400 flex items-center justify-center">
+          <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9.75 17L9 20l-1 1h8l-1-1-.75-3M3 13h18M5 17h14a2 2 0 002-2V5a2 2 0 00-2-2H5a2 2 0 00-2 2v10a2 2 0 002 2z"></path>
+          </svg>
+        </div>
+        <div>
+          <h2 class="text-xl font-bold">Advanced Visualizations</h2>
+          <p class="text-sm text-gray-400">Explore different views of your segmentation</p>
+        </div>
+      </div>
+
+      <!-- Tab Buttons -->
+      <div class="flex flex-wrap gap-2 mb-6">
+        <button onclick="showTab('clustering')" class="tab-btn active px-4 py-2 rounded-lg text-sm font-medium" id="tab-clustering">
+          🎯 Clustering Analysis
+        </button>
+        <button onclick="showTab('pca')" class="tab-btn px-4 py-2 rounded-lg text-sm font-medium" id="tab-pca">
+          🧭 PCA Projections
+        </button>
+        <button onclick="showTab('distributions')" class="tab-btn px-4 py-2 rounded-lg text-sm font-medium" id="tab-distributions">
+          📊 Distributions
+        </button>
+        <button onclick="showTab('advanced')" class="tab-btn px-4 py-2 rounded-lg text-sm font-medium" id="tab-advanced">
+          🔬 Advanced Charts
+        </button>
+        {% if category_img or time_series_img %}
+        <button onclick="showTab('analytics')" class="tab-btn px-4 py-2 rounded-lg text-sm font-medium" id="tab-analytics">
+          📈 Sales Analytics
+        </button>
+        {% endif %}
+      </div>
+
+      <!-- Tab Content: Clustering Analysis -->
+      <div id="content-clustering" class="tab-content active">
+        <div class="grid md:grid-cols-2 gap-6">
+          <div class="chart-card bg-black/20 rounded-xl p-5">
+            <h3 class="font-semibold mb-2 flex items-center gap-2">
+              <span class="text-yellow-400">📉</span> Algorithm Comparison
+            </h3>
+            <p class="text-sm text-gray-400 mb-4">Top clustering algorithms ranked by silhouette score</p>
+            <img src="{{ elbow_img }}" alt="Algorithm Comparison" class="w-full rounded-lg">
+          </div>
+
+          <div class="chart-card bg-black/20 rounded-xl p-5">
+            <h3 class="font-semibold mb-2 flex items-center gap-2">
+              <span class="text-pink-400">🎨</span> Cluster Pair Plot
+            </h3>
+            <p class="text-sm text-gray-400 mb-4">Multi-dimensional view of cluster separation</p>
+            <img src="{{ cluster_img }}" alt="Pairplot" class="w-full rounded-lg">
+          </div>
+        </div>
+      </div>
+
+      <!-- Tab Content: PCA Projections -->
+      <div id="content-pca" class="tab-content">
+        <div class="grid md:grid-cols-2 gap-6">
+          <div class="chart-card bg-black/20 rounded-xl p-5">
+            <h3 class="font-semibold mb-2 flex items-center gap-2">
+              <span class="text-blue-400">🧭</span> PCA - 2D Projection
+            </h3>
+            <p class="text-sm text-gray-400 mb-4">Principal component analysis reduces dimensions</p>
+            <img src="{{ pca_2d_img }}" alt="PCA 2D" class="w-full rounded-lg">
+          </div>
+
+          <div class="chart-card bg-black/20 rounded-xl p-5">
+            <h3 class="font-semibold mb-2 flex items-center gap-2">
+              <span class="text-green-400">🌐</span> PCA - 3D Projection
+            </h3>
+            <p class="text-sm text-gray-400 mb-4">Three-dimensional cluster visualization</p>
+            <img src="{{ pca_3d_img }}" alt="PCA 3D" class="w-full rounded-lg">
+          </div>
+        </div>
+      </div>
+
+      <!-- Tab Content: Distributions -->
+      <div id="content-distributions" class="tab-content">
+        <div class="grid md:grid-cols-2 gap-6">
+          {% if box_plots_img %}
+          <div class="chart-card bg-black/20 rounded-xl p-5">
+            <h3 class="font-semibold mb-2 flex items-center gap-2">
+              <span class="text-purple-400">📦</span> Box Plots by Cluster
+            </h3>
+            <p class="text-sm text-gray-400 mb-4">Feature distribution across segments</p>
+            <img src="{{ box_plots_img }}" alt="Box Plots" class="w-full rounded-lg">
+          </div>
+          {% endif %}
+
+          {% if violin_img %}
+          <div class="chart-card bg-black/20 rounded-xl p-5">
+            <h3 class="font-semibold mb-2 flex items-center gap-2">
+              <span class="text-cyan-400">🎻</span> Violin Plots
+            </h3>
+            <p class="text-sm text-gray-400 mb-4">Distribution shape visualization</p>
+            <img src="{{ violin_img }}" alt="Violin Plots" class="w-full rounded-lg">
+          </div>
+          {% endif %}
+        </div>
+      </div>
+
+      <!-- Tab Content: Advanced Charts -->
+      <div id="content-advanced" class="tab-content">
+        <div class="grid md:grid-cols-2 gap-6">
+          {% if heatmap_img %}
+          <div class="chart-card bg-black/20 rounded-xl p-5">
+            <h3 class="font-semibold mb-2 flex items-center gap-2">
+              <span class="text-red-400">🔥</span> Correlation Heatmap
+            </h3>
+            <p class="text-sm text-gray-400 mb-4">Feature correlation analysis</p>
+            <img src="{{ heatmap_img }}" alt="Correlation Heatmap" class="w-full rounded-lg">
+          </div>
+          {% endif %}
+
+          {% if radar_img %}
+          <div class="chart-card bg-black/20 rounded-xl p-5">
+            <h3 class="font-semibold mb-2 flex items-center gap-2">
+              <span class="text-indigo-400">🎯</span> Cluster Profiles (Radar)
+            </h3>
+            <p class="text-sm text-gray-400 mb-4">Multi-dimensional cluster comparison</p>
+            <img src="{{ radar_img }}" alt="Radar Chart" class="w-full rounded-lg">
+          </div>
+          {% endif %}
+        </div>
+      </div>
+
+      <!-- Tab Content: Sales Analytics -->
+      {% if category_img or time_series_img %}
+      <div id="content-analytics" class="tab-content">
+        <div class="grid md:grid-cols-2 gap-6">
+          {% if category_img %}
+          <div class="chart-card bg-black/20 rounded-xl p-5">
+            <h3 class="font-semibold mb-2 flex items-center gap-2">
+              <span class="text-teal-400">📊</span> Revenue by Category
+            </h3>
+            <p class="text-sm text-gray-400 mb-4">Category-wise sales breakdown</p>
+            <img src="{{ category_img }}" alt="Category Revenue" class="w-full rounded-lg">
+          </div>
+          {% endif %}
+
+          {% if time_series_img %}
+          <div class="chart-card bg-black/20 rounded-xl p-5">
+            <h3 class="font-semibold mb-2 flex items-center gap-2">
+              <span class="text-amber-400">📈</span> Sales Over Time
+            </h3>
+            <p class="text-sm text-gray-400 mb-4">Revenue and transaction trends</p>
+            <img src="{{ time_series_img }}" alt="Time Series" class="w-full rounded-lg">
+          </div>
+          {% endif %}
+        </div>
+      </div>
+      {% endif %}
+    </div>
+
+    <!-- Actions Footer -->
+    <div class="flex flex-col md:flex-row items-center justify-center gap-4 mb-10">
+      <a href="/"
+        class="glass-card hover:bg-white/10 px-8 py-4 rounded-xl font-semibold flex items-center gap-3 transition-all">
+        <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+          <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
+            d="M4 4v5h.582m15.356 2A8.001 8.001 0 004.582 9m0 0H9m11 11v-5h-.581m0 0a8.003 8.003 0 01-15.357-2m15.357 2H15">
+          </path>
+        </svg>
+        Analyze New Data
+      </a>
+    </div>
+
+    <!-- Footer -->
+    <footer class="text-center text-gray-500 text-sm border-t border-gray-800 pt-8">
+      <p>Advanced Customer Segmentation powered by Multiple ML Algorithms</p>
+      <p class="mt-2 text-gray-600">KMeans++ • Spectral • Agglomerative • GMM • BIRCH • HDBSCAN</p>
+    </footer>
+  </div>
+
+  <script>
+    function showTab(tabName) {
+      // Hide all tab contents
+      document.querySelectorAll('.tab-content').forEach(content => {
+        content.classList.remove('active');
+      });
+      
+      // Deactivate all tab buttons
+      document.querySelectorAll('.tab-btn').forEach(btn => {
+        btn.classList.remove('active');
+      });
+      
+      // Show selected tab content
+      document.getElementById('content-' + tabName).classList.add('active');
+      
+      // Activate selected tab button
+      document.getElementById('tab-' + tabName).classList.add('active');
+    }
+  </script>
+</body>
+
+</html>

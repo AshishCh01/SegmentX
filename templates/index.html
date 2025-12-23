@@ -1,0 +1,404 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Customer Segmentation | AI-Powered Analytics</title>
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800&display=swap"
+    rel="stylesheet">
+  <script src="https://cdn.tailwindcss.com"></script>
+  <script src="https://unpkg.com/@lottiefiles/lottie-player@latest/dist/lottie-player.js"></script>
+  <style>
+    * {
+      font-family: 'Inter', sans-serif;
+    }
+
+    .gradient-bg {
+      background: linear-gradient(135deg, #0f0c29 0%, #302b63 50%, #24243e 100%);
+      min-height: 100vh;
+    }
+
+    .glass-card {
+      background: rgba(255, 255, 255, 0.08);
+      backdrop-filter: blur(20px);
+      -webkit-backdrop-filter: blur(20px);
+      border: 1px solid rgba(255, 255, 255, 0.1);
+      box-shadow: 0 8px 32px rgba(0, 0, 0, 0.3);
+    }
+
+    .glow-text {
+      text-shadow: 0 0 40px rgba(139, 92, 246, 0.5);
+    }
+
+    .hover-glow:hover {
+      box-shadow: 0 0 30px rgba(139, 92, 246, 0.4);
+      transform: translateY(-2px);
+    }
+
+    .gradient-btn {
+      background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+      transition: all 0.3s ease;
+    }
+
+    .gradient-btn:hover {
+      background: linear-gradient(135deg, #764ba2 0%, #667eea 100%);
+      transform: scale(1.02);
+      box-shadow: 0 10px 30px rgba(102, 126, 234, 0.4);
+    }
+
+    .feature-card {
+      transition: all 0.3s ease;
+    }
+
+    .feature-card:hover {
+      transform: translateY(-5px);
+      background: rgba(255, 255, 255, 0.12);
+    }
+
+    .file-input-wrapper {
+      position: relative;
+      overflow: hidden;
+      display: inline-block;
+      width: 100%;
+    }
+
+    .file-input-wrapper input[type=file] {
+      position: absolute;
+      left: 0;
+      top: 0;
+      opacity: 0;
+      cursor: pointer;
+      width: 100%;
+      height: 100%;
+    }
+
+    .upload-drop-zone {
+      border: 2px dashed rgba(139, 92, 246, 0.4);
+      transition: all 0.3s ease;
+    }
+
+    .upload-drop-zone:hover {
+      border-color: rgba(139, 92, 246, 0.8);
+      background: rgba(139, 92, 246, 0.1);
+    }
+
+    .floating {
+      animation: float 6s ease-in-out infinite;
+    }
+
+    @keyframes float {
+
+      0%,
+      100% {
+        transform: translateY(0px);
+      }
+
+      50% {
+        transform: translateY(-20px);
+      }
+    }
+
+    .pulse-glow {
+      animation: pulseGlow 2s ease-in-out infinite;
+    }
+
+    @keyframes pulseGlow {
+
+      0%,
+      100% {
+        box-shadow: 0 0 20px rgba(139, 92, 246, 0.3);
+      }
+
+      50% {
+        box-shadow: 0 0 40px rgba(139, 92, 246, 0.6);
+      }
+    }
+
+    .stat-card {
+      background: linear-gradient(135deg, rgba(102, 126, 234, 0.2) 0%, rgba(118, 75, 162, 0.2) 100%);
+    }
+
+    .particles {
+      position: fixed;
+      top: 0;
+      left: 0;
+      width: 100%;
+      height: 100%;
+      overflow: hidden;
+      pointer-events: none;
+      z-index: 0;
+    }
+
+    .particle {
+      position: absolute;
+      width: 4px;
+      height: 4px;
+      background: rgba(139, 92, 246, 0.3);
+      border-radius: 50%;
+      animation: rise 10s infinite;
+    }
+
+    @keyframes rise {
+      0% {
+        transform: translateY(100vh) scale(0);
+        opacity: 0;
+      }
+
+      50% {
+        opacity: 1;
+      }
+
+      100% {
+        transform: translateY(-100vh) scale(1);
+        opacity: 0;
+      }
+    }
+  </style>
+</head>
+
+<body class="gradient-bg text-white overflow-x-hidden">
+  <!-- Animated Particles Background -->
+  <div class="particles">
+    <div class="particle" style="left: 10%; animation-delay: 0s;"></div>
+    <div class="particle" style="left: 20%; animation-delay: 2s;"></div>
+    <div class="particle" style="left: 30%; animation-delay: 4s;"></div>
+    <div class="particle" style="left: 40%; animation-delay: 1s;"></div>
+    <div class="particle" style="left: 50%; animation-delay: 3s;"></div>
+    <div class="particle" style="left: 60%; animation-delay: 5s;"></div>
+    <div class="particle" style="left: 70%; animation-delay: 2.5s;"></div>
+    <div class="particle" style="left: 80%; animation-delay: 1.5s;"></div>
+    <div class="particle" style="left: 90%; animation-delay: 4.5s;"></div>
+  </div>
+
+  <div class="relative z-10 max-w-7xl mx-auto px-6 py-12">
+    <!-- Navigation -->
+    <nav class="flex justify-between items-center mb-16">
+      <div class="flex items-center gap-3">
+        <div
+          class="w-10 h-10 rounded-xl bg-gradient-to-br from-violet-500 to-purple-600 flex items-center justify-center">
+          <svg class="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
+              d="M9 19v-6a2 2 0 00-2-2H5a2 2 0 00-2 2v6a2 2 0 002 2h2a2 2 0 002-2zm0 0V9a2 2 0 012-2h2a2 2 0 012 2v10m-6 0a2 2 0 002 2h2a2 2 0 002-2m0 0V5a2 2 0 012-2h2a2 2 0 012 2v14a2 2 0 01-2 2h-2a2 2 0 01-2-2z">
+            </path>
+          </svg>
+        </div>
+        <span class="text-xl font-bold">SegmentAI</span>
+      </div>
+      <div class="flex items-center gap-6">
+        <span class="text-gray-400 text-sm">Powered by Machine Learning</span>
+        <div class="w-2 h-2 rounded-full bg-green-400 animate-pulse"></div>
+      </div>
+    </nav>
+
+    <!-- Hero Section -->
+    <header class="text-center mb-20">
+      <div class="inline-block mb-6 px-4 py-2 rounded-full glass-card text-sm text-violet-300">
+        🚀 Enterprise-Grade Customer Analytics
+      </div>
+      <h1 class="text-5xl md:text-7xl font-extrabold mb-6 glow-text leading-tight">
+        Customer<br>
+        <span class="bg-gradient-to-r from-violet-400 via-purple-400 to-pink-400 bg-clip-text text-transparent">
+          Segmentation
+        </span>
+      </h1>
+      <p class="text-xl text-gray-400 max-w-2xl mx-auto leading-relaxed">
+        Harness the power of KMeans clustering to discover hidden patterns in your customer data and drive strategic
+        business decisions.
+      </p>
+    </header>
+
+    <!-- Main Content Grid -->
+    <div class="grid lg:grid-cols-2 gap-10 mb-20">
+      <!-- Left Column - Features -->
+      <div class="space-y-6">
+        <div class="glass-card rounded-2xl p-8 feature-card">
+          <div class="flex items-start gap-5">
+            <div
+              class="w-14 h-14 rounded-xl bg-gradient-to-br from-blue-500 to-cyan-400 flex items-center justify-center flex-shrink-0">
+              <svg class="w-7 h-7" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M13 10V3L4 14h7v7l9-11h-7z">
+                </path>
+              </svg>
+            </div>
+            <div>
+              <h3 class="text-xl font-semibold mb-2">Instant Analysis</h3>
+              <p class="text-gray-400">Real-time clustering with advanced algorithms. Get actionable insights in
+                seconds, not hours.</p>
+            </div>
+          </div>
+        </div>
+
+        <div class="glass-card rounded-2xl p-8 feature-card">
+          <div class="flex items-start gap-5">
+            <div
+              class="w-14 h-14 rounded-xl bg-gradient-to-br from-purple-500 to-pink-400 flex items-center justify-center flex-shrink-0">
+              <svg class="w-7 h-7" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
+                  d="M9 12l2 2 4-4m5.618-4.016A11.955 11.955 0 0112 2.944a11.955 11.955 0 01-8.618 3.04A12.02 12.02 0 003 9c0 5.591 3.824 10.29 9 11.622 5.176-1.332 9-6.03 9-11.622 0-1.042-.133-2.052-.382-3.016z">
+                </path>
+              </svg>
+            </div>
+            <div>
+              <h3 class="text-xl font-semibold mb-2">Smart Segmentation</h3>
+              <p class="text-gray-400">AI-powered customer grouping identifies Budget Shoppers, High Spenders, and Loyal
+                Customers automatically.</p>
+            </div>
+          </div>
+        </div>
+
+        <div class="glass-card rounded-2xl p-8 feature-card">
+          <div class="flex items-start gap-5">
+            <div
+              class="w-14 h-14 rounded-xl bg-gradient-to-br from-orange-500 to-yellow-400 flex items-center justify-center flex-shrink-0">
+              <svg class="w-7 h-7" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
+                  d="M11 3.055A9.001 9.001 0 1020.945 13H11V3.055z"></path>
+                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
+                  d="M20.488 9H15V3.512A9.025 9.025 0 0120.488 9z"></path>
+              </svg>
+            </div>
+            <div>
+              <h3 class="text-xl font-semibold mb-2">Rich Visualizations</h3>
+              <p class="text-gray-400">Interactive charts, PCA plots, and cluster distributions help you understand
+                customer behavior at a glance.</p>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <!-- Right Column - Upload Form -->
+      <div class="glass-card rounded-3xl p-10 pulse-glow">
+        <div class="text-center mb-8">
+          <div class="floating inline-block mb-6">
+            <lottie-player src="https://assets2.lottiefiles.com/packages/lf20_rp3c3dsv.json" background="transparent"
+              speed="1" style="width: 180px; height: 180px; margin: auto;" loop autoplay>
+            </lottie-player>
+          </div>
+          <h2 class="text-2xl font-bold mb-2">Upload Your Data</h2>
+          <p class="text-gray-400">Start your customer analysis journey</p>
+        </div>
+
+        <form action="/analyze" method="post" enctype="multipart/form-data" class="space-y-6">
+          <div class="upload-drop-zone rounded-2xl p-8 text-center cursor-pointer" id="dropZone">
+            <div class="file-input-wrapper">
+              <input type="file" name="file" required id="fileInput" accept=".csv" onchange="updateFileName(this)">
+              <div id="uploadContent">
+                <svg class="w-12 h-12 mx-auto mb-4 text-violet-400" fill="none" stroke="currentColor"
+                  viewBox="0 0 24 24">
+                  <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
+                    d="M7 16a4 4 0 01-.88-7.903A5 5 0 1115.9 6L16 6a5 5 0 011 9.9M15 13l-3-3m0 0l-3 3m3-3v12"></path>
+                </svg>
+                <p class="text-lg font-medium mb-2">Drop your CSV file here</p>
+                <p class="text-sm text-gray-400">or click to browse</p>
+              </div>
+            </div>
+          </div>
+
+          <p id="fileName" class="text-center text-violet-300 text-sm hidden"></p>
+
+          <button type="submit"
+            class="gradient-btn w-full py-4 rounded-xl font-semibold text-lg shadow-lg flex items-center justify-center gap-3">
+            <svg class="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+              <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M13 10V3L4 14h7v7l9-11h-7z">
+              </path>
+            </svg>
+            Analyze Customers
+          </button>
+        </form>
+
+        <div class="mt-8 pt-6 border-t border-gray-700">
+          <div class="flex items-center justify-center gap-6 text-sm text-gray-400">
+            <div class="flex items-center gap-2">
+              <svg class="w-5 h-5 text-green-400" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M5 13l4 4L19 7"></path>
+              </svg>
+              Secure Processing
+            </div>
+            <div class="flex items-center gap-2">
+              <svg class="w-5 h-5 text-green-400" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M5 13l4 4L19 7"></path>
+              </svg>
+              CSV Format
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <!-- Statistics Section -->
+    <div class="grid grid-cols-2 md:grid-cols-4 gap-6 mb-16">
+      <div class="stat-card glass-card rounded-2xl p-6 text-center">
+        <div class="text-3xl font-bold text-violet-300 mb-1">4</div>
+        <div class="text-sm text-gray-400">Customer Segments</div>
+      </div>
+      <div class="stat-card glass-card rounded-2xl p-6 text-center">
+        <div class="text-3xl font-bold text-violet-300 mb-1">6+</div>
+        <div class="text-sm text-gray-400">Visualizations</div>
+      </div>
+      <div class="stat-card glass-card rounded-2xl p-6 text-center">
+        <div class="text-3xl font-bold text-violet-300 mb-1">PCA</div>
+        <div class="text-sm text-gray-400">2D & 3D Analysis</div>
+      </div>
+      <div class="stat-card glass-card rounded-2xl p-6 text-center">
+        <div class="text-3xl font-bold text-violet-300 mb-1">CSV</div>
+        <div class="text-sm text-gray-400">Export Results</div>
+      </div>
+    </div>
+
+    <!-- Footer -->
+    <footer class="text-center text-gray-500 text-sm border-t border-gray-800 pt-8">
+      <p>Built with ❤️ for data-driven business decisions</p>
+      <p class="mt-2 text-gray-600">Powered by Scikit-learn & Flask</p>
+    </footer>
+  </div>
+
+  <script>
+    function updateFileName(input) {
+      const fileName = document.getElementById('fileName');
+      const uploadContent = document.getElementById('uploadContent');
+
+      if (input.files && input.files[0]) {
+        fileName.textContent = '📄 ' + input.files[0].name;
+        fileName.classList.remove('hidden');
+        uploadContent.innerHTML = `
+          <svg class="w-12 h-12 mx-auto mb-4 text-green-400" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 12l2 2 4-4m6 2a9 9 0 11-18 0 9 9 0 0118 0z"></path>
+          </svg>
+          <p class="text-lg font-medium text-green-300">File Selected!</p>
+          <p class="text-sm text-gray-400">Click button below to analyze</p>
+        `;
+      }
+    }
+
+    // Drag and drop functionality
+    const dropZone = document.getElementById('dropZone');
+    const fileInput = document.getElementById('fileInput');
+
+    ['dragenter', 'dragover', 'dragleave', 'drop'].forEach(eventName => {
+      dropZone.addEventListener(eventName, preventDefaults, false);
+    });
+
+    function preventDefaults(e) {
+      e.preventDefault();
+      e.stopPropagation();
+    }
+
+    ['dragenter', 'dragover'].forEach(eventName => {
+      dropZone.addEventListener(eventName, () => dropZone.classList.add('bg-violet-900/20'), false);
+    });
+
+    ['dragleave', 'drop'].forEach(eventName => {
+      dropZone.addEventListener(eventName, () => dropZone.classList.remove('bg-violet-900/20'), false);
+    });
+
+    dropZone.addEventListener('drop', (e) => {
+      const dt = e.dataTransfer;
+      const files = dt.files;
+      fileInput.files = files;
+      updateFileName(fileInput);
+    });
+  </script>
+</body>
+
+</html>

@@ -1,0 +1,14 @@
+# Core dependencies
+flask>=2.0.0
+pandas>=1.5.0
+numpy>=1.21.0
+matplotlib>=3.5.0
+seaborn>=0.12.0
+scikit-learn>=1.2.0
+
+# Optional: HDBSCAN for density-based clustering (noise-resistant)
+# Uncomment if you want HDBSCAN support:
+# hdbscan>=0.8.29
+
+# Performance optimization
+joblib>=1.3.0
